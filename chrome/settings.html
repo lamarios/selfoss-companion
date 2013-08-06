@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
+	<head>
+		<title>Settings</title>
+			<script type="text/javascript" src="js/lib/jquery-2.0.3.min.js"></script>
+			<script type="text/javascript" src="js/settings.js"></script>
+	</head>
+	<body>
+		<form id="settings">
+			<p>
+				<label for="url">Selfoss URL:</label>
+				<input type="text" name="url" id="url"/>
+			</p>
+			<!--
+<p>
+				<label for="username">Username <em>(optionnal)</em>:</label>
+				<input type="text" name="username" id="username"/>
+			</p>
+			<p>
+				<label for="password">Password <em>(optionnal)</em>:</label>
+				<input type="password" name="password" id="password"/>
+			</p>
+-->
+			<p>
+				<input type="checkbox" name="update" id="update"/>
+				<label for="update">Update sources</label>
+			</p>
+			<p id="timer-container">
+				<label for="timer">Update frequency <em>(in minutes)</em>:</label>
+				<input type="text" name="timer" id="timer"/>
+			</p>
+			<input type="submit" value="Save" />
+		</form>
+	</body>
+</html>

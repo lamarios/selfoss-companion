@@ -289,6 +289,9 @@ img {
     background:#333;
     border-top:3px solid #365c5a;
     height:150px;
+    position: absolute;
+    bottom: 0px;
+    width:100%;
 }
 
     #footer,

@@ -1,42 +1,61 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
 	<head>
 		<title>Settings</title>
+	    	<link rel="stylesheet" type="text/css" href="css/settings.css" media="screen" />
 			<script type="text/javascript" src="js/lib/jquery-2.0.3.min.js"></script>
 			<script type="text/javascript" src="js/settings.js"></script>
 	</head>
 	<body>
-		<form id="settings">
-			
-			<p>
-				<label for="url">Selfoss URL:</label>
-				<input type="text" name="url" id="url"/>
-			</p>
-			<p>
-				<label for="action">Extension icon action:</label>
-				<select id="action" name="action">
-					<option value="iframe">Open pop up with mobile version</option>
-					<option value="visitSite">Open Selfoss in a new tab</option>
-				</select>
-			</p>
-			<!--
-<p>
-				<label for="username">Username <em>(optionnal)</em>:</label>
-				<input type="text" name="username" id="username"/>
-			</p>
-			<p>
-				<label for="password">Password <em>(optionnal)</em>:</label>
-				<input type="password" name="password" id="password"/>
-			</p>
--->
-			<p>
-				<input type="checkbox" name="update" id="update"/>
-				<label for="update">Update sources</label>
-			</p>
-			<p id="timer-container">
-				<label for="timer">Update frequency <em>(in minutes)</em>:</label>
-				<input type="text" name="timer" id="timer"/>
-			</p>
-			<input type="submit" value="Save" />
-		</form>
+		<h1>Settings</h1>
+		<div class="content">
+			<form id="settings">
+				<p>
+					<label for="url">Selfoss URL:</label>
+					<input type="text" name="url" id="url"/>
+				</p>
+				<p>
+					<label for="action">Extension icon action:</label>
+					<select id="action" name="action">
+						<option value="iframe">Open pop up with mobile version</option>
+						<option value="visitSite">Open Selfoss in a new tab</option>
+					</select>
+				</p>
+				<!--
+	<p>
+					<label for="username">Username <em>(optionnal)</em>:</label>
+					<input type="text" name="username" id="username"/>
+				</p>
+				<p>
+					<label for="password">Password <em>(optionnal)</em>:</label>
+					<input type="password" name="password" id="password"/>
+				</p>
+	-->
+				<p>
+					<input type="checkbox" name="update" id="update"/>
+					<label for="update">Update sources</label>
+				</p>
+				<p id="timer-container">
+					<label for="timer">Update frequency <em>(in minutes)</em>:</label>
+					<input type="text" name="timer" id="timer"/>
+				</p>
+				<input type="submit" value="Save" />
+			</form>
+		</div>
+		 <div id="footer">
+	        <p>
+	            <a href="https://github.com/lamarios/selfoss-companion">Github</a>
+	            |
+	            <a href="http://selfoss.aditu.de/">Selfoss RSS reader</a>
+	            |
+	            logo by <a href="http://blog.artcore-illustrations.de/aicons/">ArtCore</a>
+	        </p>
+	        <p>
+	            Selfoss: &copy; by Tobias Zeising &sdot; <a href="mailto:tobias.zeising@aditu.de">tobias.zeising@aditu.de</a> &sdot; <a href="http://www.aditu.de">www.aditu.de</a>
+	        </p>
+	         <p>
+	            Browser extensions: &copy; by Paul Fauchon &sdot; <a href="mailto:p.fauchon@gmail.com">p.fauchon@gmail.com</a> &sdot; <a href="http://selfoss-companion.ftpix.com">http://selfoss-companion.ftpix.com</a>
+	        </p>
+    	</div>
+
 	</body>
 </html>

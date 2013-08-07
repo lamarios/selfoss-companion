@@ -10,16 +10,19 @@
           "128": "icon128.png" },
 
   "browser_action": {
+  	"default_popup": "popup.html",
     "default_icon": "logo.png"
   },
   
   "options_page": "settings.html",
+  
   "permissions": [
   	"alarms",
   	"storage",
   	"tabs",
   	"notifications",
   	"http://*/"],
+  	
   "background": {
     "page": "background.html",
     "persistent":true

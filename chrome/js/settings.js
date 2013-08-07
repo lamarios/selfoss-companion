@@ -18,7 +18,6 @@ if (typeof String.prototype.endsWith != 'function') {
 
 $(document).ready(function(){
 	
-
 	$("#settings").submit(saveChanges);
 	
 	$("#update").click(toggleTimer);
@@ -47,6 +46,12 @@ $(document).ready(function(){
      	$("#timer").val(20);
       }
     
+    });
+    
+    chrome.storage.local.get('action', function(data) {
+      if (data.action){
+        $("#action").val(data.action);
+      }
     });
   
 });
@@ -95,7 +100,8 @@ function saveChanges() {
 	chrome.storage.local.set({
 		'url': url,
 		'update': newUpdate,
-		'timer': timer
+		'timer': timer,
+		'action': $("#action").val()
 		//'username': username,
 		//'password': password
 		}, function() {
@@ -120,6 +126,9 @@ function saveChanges() {
 	if(update && timer != oldTimer){
 		chrome.extension.sendMessage({message: "restartUpdateAlarm"});
 	}
+	
+	chrome.extension.sendMessage({message: "updateIconListener"});
+
 	
 	update = newUpdate;
 	return false;

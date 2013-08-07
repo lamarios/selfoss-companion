@@ -1,16 +1,17 @@
 var unreadCount = 0;
 var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
 var regex = new RegExp(expression);
+var updatingFeeds = false;
 
 $(document).ready(function(){
 
-	checkUnread();
-	
-	startUnreadAlarm();
+	//checkUnread();
 	
 	chrome.browserAction.onClicked.addListener(visitSite);
-	
+
 	chrome.notifications.onClicked.addListener(visitSite);
+	
+	updateIconListener();
 	
 	chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
 		console.log("[MESSAGE] "+request.message);
@@ -26,18 +27,29 @@ $(document).ready(function(){
 		if (request.message == "stopUpdateAlarm") {
 			stopUpdateAlarm();    
 		}
-		
+				
 		if (request.message == "restartUpdateAlarm") {
 			stopUpdateAlarm();    
 			startUpdateAlarm();    
+		}
+		
+		if (request.message == "visitSite") {
+			visitSite();    
+		}
+		
+		if(request.message == "updateIconListener"){
+			updateIconListener();
 		}
 	});
 	
 	//checking if we need to start the update alarm
 	 chrome.storage.local.get('update', function(data) {
-      if (data.update){
-      	startUpdateAlarm();
-      }
+		if (data.update){
+			startUpdateAlarm();
+		}else{
+			checkUnread();
+		}
+		startUnreadAlarm();
     });
 });
 
@@ -50,7 +62,7 @@ function startUnreadAlarm(){
 	console.log("[UNREAD UPDATE] Creating alarm");
 	var alarm = chrome.alarms.create("unreadAlarm", {
 		when:0,
-		periodInMinutes: 10
+		periodInMinutes: 5
 	});
 	
 	console.log("[ALARMS] Adding event to alarm");
@@ -71,16 +83,20 @@ function startUnreadAlarm(){
 * Ajax call to the stats URL of the selfoss installation
 */
 function checkUnread(){
-	console.log("[UNREAD UPDATE]  Getting unread count");
-	chrome.storage.local.get('url', function(data) {
-    	if (data.url && data.url.match(regex)){
-    		console.log("[UNREAD UPDATE]  Calling url"+data.url+"/stats");
-	        $.getJSON(data.url+"/stats", updateCounter).fail(failUnread);
-    	}else{
-	    	console.log("[UNREAD UPDATE]  Invalid url");
-    		chrome.browserAction.setBadgeText({text: "!"});
-    	}
-    });
+	if(!updatingFeeds){
+		console.log("[UNREAD UPDATE]  Getting unread count");
+		chrome.storage.local.get('url', function(data) {
+	    	if (data.url && data.url.match(regex)){
+	    		console.log("[UNREAD UPDATE]  Calling url"+data.url+"/stats");
+		        $.getJSON(data.url+"/stats", updateCounter).fail(failUnread);
+	    	}else{
+		    	console.log("[UNREAD UPDATE]  Invalid url");
+	    		chrome.browserAction.setBadgeText({text: "!"});
+	    	}
+	    });
+    }else{
+		console.log("[UNREAD UPDATE] Skipping, update in progress");
+    }
 }
 
 
@@ -92,7 +108,7 @@ function updateCounter(result){
 	if(result.unread > 0){
 		chrome.browserAction.setBadgeText({text: result.unread});
 		
-		if(unreadCount != result.unread){
+		if(unreadCount < result.unread){
 			//Getting old unread count, if different than new one, display notification
     		chrome.notifications.create("unreadCount", {
     		  type: "basic",
@@ -103,6 +119,8 @@ function updateCounter(result){
 			  ,function(){}
 			);
 		}
+	}else{
+				chrome.browserAction.setBadgeText({text: ""});
 	}
 	
 	unreadCount = result.unread;
@@ -115,6 +133,7 @@ function updateCounter(result){
 function failUpdate(){
 	console.log("[UPDATE TRIGGER] Fail to update feeds");
 	chrome.browserAction.setBadgeText({text: "!"});
+	updatingFeeds = false;
 }
 
 
@@ -159,7 +178,7 @@ function startUpdateAlarm(timer){
 			when:0,
 			periodInMinutes: parseInt(timer)
 		});
-			listAlarms();
+		listAlarms();
 	}
 }
 
@@ -180,11 +199,17 @@ function stopUpdateAlarm(){
 function updateFeeds(){
 	console.log("[UPDATE TRIGGER] updating feeds");
 	
+	updatingFeeds = true;
+	chrome.browserAction.setBadgeText({text: "Updating..."});
+
 	chrome.storage.local.get('url', function(data) {
     	if (data.url && data.url.match(regex)){
     		console.log("[UPDATE TRIGGER]  Calling url "+data.url+"/update");
 	        $.get(data.url+"/update", function(){
 	        	console.log("[UPDATE TRIGGER] Feed Updating finished");
+	        	updatingFeeds = false;
+				chrome.browserAction.setBadgeText({text: ""});
+				
 	        	checkUnread();
 	        }).fail(failUpdate);
     	}else{
@@ -202,4 +227,19 @@ function listAlarms(){
 			console.log("[ALARM LIST]"+alarm.name);
 		});
 	});
+}
+
+/*
+* Update icon's action depending on settings
+*/
+function updateIconListener(){
+	console.log("[ICON LISTENER] Setting icon action listener");
+	chrome.storage.local.get('action', function(data) {
+    	if (data.action == "iframe"){
+	    	chrome.browserAction.setPopup({popup:"popup.html"});
+	    }else{
+   	    	chrome.browserAction.setPopup({popup:""});
+    	}
+    });
+	
 }

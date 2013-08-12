@@ -118,6 +118,9 @@ function updateCounter(result){
 			  }
 			  ,function(){}
 			);
+			setTimeout(function(){
+				chrome.notifications.clear("unreadCount", function(){});
+			}, 3000);
 		}
 	}else{
 				chrome.browserAction.setBadgeText({text: ""});

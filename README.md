@@ -3,6 +3,10 @@ selfoss-companion
 Copyright (c) 2013 Paul Fauchon, p.fauchon@gmail.com  
 Browser extensions for selfoss RSS reader
 
+Website: http://selfoss-companion.ftpix.com
+
+Available on the chrome webstore: https://chrome.google.com/webstore/detail/selfoss-companion/fchonfjbfngdipnkpeekhncmhomfccfj
+
 
 CHROME CHANGELOG
 ---------
@@ -18,6 +22,9 @@ Version 0.0.0.2
 
 CREDITS
 -------
+
+Great thanks to Tobias Zeisingfor his amazing self-hosted RSS reader Selfoss ! Available here: http://selfoss.aditu.de/
+
 Libraries used:
 * jQuery: http://jquery.com/
 * TipTip: http://code.drewwilson.com/entry/tiptip-jquery-plugin

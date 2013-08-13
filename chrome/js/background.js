@@ -106,7 +106,7 @@ function checkUnread(){
 function updateCounter(result){
 	console.log("[UNREAD UPDATE] parsing result");
 	if(result.unread > 0){
-		chrome.browserAction.setBadgeText({text: result.unread});
+		chrome.browserAction.setBadgeText({text: result.unread.toString()});
 		
 		if(unreadCount < result.unread){
 			//Getting old unread count, if different than new one, display notification
@@ -118,6 +118,9 @@ function updateCounter(result){
 			  }
 			  ,function(){}
 			);
+			setTimeout(function(){
+				chrome.notifications.clear("unreadCount", function(){});
+			}, 3000);
 		}
 	}else{
 				chrome.browserAction.setBadgeText({text: ""});

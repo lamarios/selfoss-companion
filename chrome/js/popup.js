@@ -4,6 +4,8 @@ var backgroundPage = chrome.extension.getBackgroundPage();
 
 $(document).ready(function(){	
 	$("#visitSite").click(visitSite);
+	$("#settings").click(settings);
+	$("#update").click(updateFeeds);
 	
 	chrome.storage.local.get('url', function(data) {
     	if (data.url && data.url.match(regex)){
@@ -13,10 +15,21 @@ $(document).ready(function(){
     		visitSite();
     	}
     });
+    
+    
+    $("#footer a").tipTip({maxWidth: "auto", defaultPosition:"top", delay:0, edgeOffset:9});
 });
 
 function visitSite(){
 	chrome.extension.sendMessage({message: "visitSite"});
+}
+
+function updateFeeds(){
+	backgroundPage.updateFeeds();
+}
+
+function settings(){
+	chrome.tabs.create({url: "settings.html"});
 }
 
 addEventListener("unload", function (event) {

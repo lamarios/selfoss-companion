@@ -13,11 +13,62 @@ iframe{
 	height: 500px;
 }
 
-footer{
-	padding: 5px;
+#footer{
+	padding-right: 5px;
+	padding-left: 5px;
 	text-align: center;
+	background:#333;
+    border-top:3px solid #365c5a;
 }
 
-footer a{
-	width: auto;
+#footer ul{
+	padding: 0px;
+	margin: 0px;
+}#footer ul li{
+	margin-left: 0px;
+	margin-bottom: 5px;
+	margin-right: 0px;
+	margin-top: 5px;
+	padding: 0px;
+	display: inline-block;
+	list-style-type: none;
 }
+
+#footer ul li a{
+	margin-right: 5px;
+	margin-left: 5px;
+	font-size: 13px;
+	color: #f8f8f8;
+	width: auto;
+	cursor:pointer;
+}
+
+#update{
+	padding-left: 32px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-image: url(../images/cloud4.png);
+}
+
+#settings{
+	padding-left: 32px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-image: url(../images/config.png);
+}
+
+#visitSite{
+	padding-left: 20px;
+	background-position: left center;
+	background-repeat: no-repeat;
+	background-image: url(../images/home.png);
+}
+
+.iconOnly{
+	width: 32px;
+}
+
+#mainLink{
+	width: 220px;
+}
+

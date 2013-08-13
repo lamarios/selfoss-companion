@@ -51,6 +51,13 @@ $(document).ready(function(){
 		}
 		startUnreadAlarm();
     });
+    
+    //Showing Settings when the extension is installed for the first time
+    chrome.runtime.onInstalled.addListener(function(details) {
+    	if(details.reason == "install"){
+    		chrome.tabs.create({url: "settings.html"});
+    	}
+    });
 });
 
 
@@ -200,25 +207,30 @@ function stopUpdateAlarm(){
 * Ajax call to the feed update url.
 */
 function updateFeeds(){
-	console.log("[UPDATE TRIGGER] updating feeds");
+	if(!updatingFeeds){
+		console.log("[UPDATE TRIGGER] updating feeds");
+		
+		updatingFeeds = true;
+		chrome.browserAction.setBadgeText({text: "Updating..."});
 	
-	updatingFeeds = true;
-	chrome.browserAction.setBadgeText({text: "Updating..."});
-
-	chrome.storage.local.get('url', function(data) {
-    	if (data.url && data.url.match(regex)){
-    		console.log("[UPDATE TRIGGER]  Calling url "+data.url+"/update");
-	        $.get(data.url+"/update", function(){
-	        	console.log("[UPDATE TRIGGER] Feed Updating finished");
-	        	updatingFeeds = false;
-				chrome.browserAction.setBadgeText({text: ""});
-				
-	        	checkUnread();
-	        }).fail(failUpdate);
-    	}else{
-	    	console.log("[UNREAD UPDATE]  Invalid url");
-    	}
-	});
+		chrome.storage.local.get('url', function(data) {
+	    	if (data.url && data.url.match(regex)){
+	    		console.log("[UPDATE TRIGGER]  Calling url "+data.url+"/update");
+		        $.get(data.url+"/update", function(){
+		        	console.log("[UPDATE TRIGGER] Feed Updating finished");
+		        	updatingFeeds = false;
+					chrome.browserAction.setBadgeText({text: ""});
+					
+		        	checkUnread();
+		        }).fail(failUpdate);
+	    	}else{
+	    		updatingFeeds = false;
+		    	console.log("[UNREAD UPDATE]  Invalid url");
+	    	}
+		});
+	}else{
+		console.log("[UPDATE TRIGGER]  Already updating, skipping.");
+	}
 }
 
 /*

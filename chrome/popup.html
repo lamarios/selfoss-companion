@@ -2,15 +2,27 @@
 	<head>
 		<title></title>
     	<link rel="stylesheet" type="text/css" href="css/popup.css" media="screen" />
+    	<link rel="stylesheet" type="text/css" href="css/lib/tipTip.css" media="screen" />
 		<script type="text/javascript" src="js/lib/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="js/lib/jquery.tipTip.minified.js"></script>
     	<script type="text/javascript" src="js/popup.js" ></script>
 	</head>
 	<body>
 		<iframe id="iframe" src="">
 		
 		</iframe>
-		<footer>
-			<a id="visitSite">Visit desktop version</a>
-		</footer>
+		<div id="footer">
+			<ul>
+				<li id="mainLink">
+					<a id="visitSite" title="Opens a new tab on your own selfoss.">Visit desktop version</a>
+				</li>
+				<li class="iconOnly">
+					<a id="update" title="Update feeds."></a>
+				</li>
+				<li class="iconOnly">
+					<a id="settings" title="Settings"> </a>
+				</li>
+			</ul>
+		</div>
 	</body>
 </html>

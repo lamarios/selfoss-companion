@@ -10,6 +10,9 @@ Available on the chrome webstore: https://chrome.google.com/webstore/detail/self
 
 CHROME CHANGELOG
 ---------
+Version 0.0.0.5
+* Removed iframe popup, since selfoss 2.10 iframing selfoss is not permitted anymore
+* now allowing IP address as URL for selfoss
 Version 0.0.0.3
 * Notifications will now disappear after 3 seconds (Thanks alenofx)
 * Unread item counter will be updated when the pop-up is closed (Thanks alenofx)

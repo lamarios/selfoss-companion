@@ -102,7 +102,8 @@ function saveChanges() {
 		'url': url,
 		'update': newUpdate,
 		'timer': timer,
-		'action': $("#action").val()
+		//'action': $("#action").val()
+		'action': 'visiteSite'
 		//'username': username,
 		//'password': password
 		}, function() {

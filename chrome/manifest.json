@@ -3,14 +3,14 @@
 
   "name": "Selfoss Companion",
   "description": "Selfoss RSS reader companion.",
-  "version": "0.0.0.3",
+  "version": "0.0.0.5",
   
   "icons": { "16": "icon16.png",
            "48": "icon48.png",
           "128": "icon128.png" },
 
   "browser_action": {
-  	"default_popup": "popup.html",
+  	"default_popup": "",
     "default_icon": "logo.png"
   },
   

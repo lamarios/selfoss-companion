@@ -1,5 +1,5 @@
 var unreadCount = 0;
-var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+var expression = /https?:\/\/(.*)/gi;
 var regex = new RegExp(expression);
 var updatingFeeds = false;
 
@@ -248,13 +248,14 @@ function listAlarms(){
 * Update icon's action depending on settings
 */
 function updateIconListener(){
-	console.log("[ICON LISTENER] Setting icon action listener");
+	//console.log("[ICON LISTENER] Setting icon action listener");
 	chrome.storage.local.get('action', function(data) {
-    	if (data.action == "iframe"){
-	    	chrome.browserAction.setPopup({popup:"popup.html"});
-	    }else{
+    	//if (data.action == "iframe"){
+	    //	chrome.browservar expression = /https?:\/\/(.*)/gi;
+//.setPopup({popup:"popup.html"});
+	 //   }else{
    	    	chrome.browserAction.setPopup({popup:""});
-    	}
+    	//}
     });
 	
 }

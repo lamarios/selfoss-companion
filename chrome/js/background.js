@@ -106,7 +106,7 @@ function checkUnread(){
 				
 				$.ajax({
 					type: "GET",
-					url: data.url+'/stats',
+					url: newUrl+'/stats',
 					dataType: 'json',
 					success: function (result){
 						updateCounter(result);

@@ -1,6 +1,8 @@
 var unreadCount = 0;
 var expression = /https?:\/\/(.*)/gi;
+var authExpr = /https?:\/\/(.*):(.*)@(.*)/gi
 var regex = new RegExp(expression);
+var authRegex = new RegExp(authExpr);
 var updatingFeeds = false;
 
 $(document).ready(function(){
@@ -93,7 +95,27 @@ function checkUnread(){
 	if(!updatingFeeds){
 		console.log("[UNREAD UPDATE]  Getting unread count");
 		chrome.storage.local.get('url', function(data) {
-	    	if (data.url && data.url.match(regex)){
+			if(data.url && data.url.match(authRegex)){
+				//extracting the username and password from the setting string
+				var match = authRegex.exec(data.url);
+				var username = match[1];
+				var password = match[2];
+				
+	    		console.log("[UNREAD UPDATE]  Calling url["+data.url+"/stats] with basic auth");
+				var newUrl = data.url.replace(username+':'+password+'@', '');
+				
+				$.ajax({
+					type: "GET",
+					url: data.url+'/stats',
+					dataType: 'json',
+					success: function (result){
+						updateCounter(result);
+					},
+					username: username,
+					password: password
+				});
+				
+			} else if (data.url && data.url.match(regex)){
 	    		console.log("[UNREAD UPDATE]  Calling url"+data.url+"/stats");
 		        $.getJSON(data.url+"/stats", updateCounter).fail(failUnread);
 	    	}else{

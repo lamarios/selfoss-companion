@@ -8,42 +8,42 @@ var updatingFeeds = false;
 $(document).ready(function(){
 
 	//checkUnread();
-	
+
 	chrome.browserAction.onClicked.addListener(visitSite);
 
 	chrome.notifications.onClicked.addListener(visitSite);
-	
+
 	updateIconListener();
-	
+
 	chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
 		console.log("[MESSAGE] "+request.message);
-		
+
 		if (request.message == "check") {
-			checkUnread();    
+			checkUnread();
 		}
-		
+
 		if (request.message == "startUpdateAlarm") {
-			startUpdateAlarm();    
+			startUpdateAlarm();
 		}
-		
+
 		if (request.message == "stopUpdateAlarm") {
-			stopUpdateAlarm();    
+			stopUpdateAlarm();
 		}
-				
+
 		if (request.message == "restartUpdateAlarm") {
-			stopUpdateAlarm();    
-			startUpdateAlarm();    
+			stopUpdateAlarm();
+			startUpdateAlarm();
 		}
-		
+
 		if (request.message == "visitSite") {
-			visitSite();    
+			visitSite();
 		}
-		
+
 		if(request.message == "updateIconListener"){
 			updateIconListener();
 		}
 	});
-	
+
 	//checking if we need to start the update alarm
 	 chrome.storage.local.get('update', function(data) {
 		if (data.update){
@@ -53,7 +53,7 @@ $(document).ready(function(){
 		}
 		startUnreadAlarm();
     });
-    
+
     //Showing Settings when the extension is installed for the first time
     chrome.runtime.onInstalled.addListener(function(details) {
     	if(details.reason == "install"){
@@ -73,13 +73,13 @@ function startUnreadAlarm(){
 		when:0,
 		periodInMinutes: 5
 	});
-	
+
 	console.log("[ALARMS] Adding event to alarm");
 	chrome.alarms.onAlarm.addListener(function(alarm) {
 		if(alarm.name == "unreadAlarm"){
 			checkUnread();
 		}
-		
+
 		if(alarm.name == "updateAlarm"){
 			updateFeeds();
 		}
@@ -94,16 +94,16 @@ function startUnreadAlarm(){
 function checkUnread(){
 	if(!updatingFeeds){
 		console.log("[UNREAD UPDATE]  Getting unread count");
-		chrome.storage.local.get('url', function(data) {
+		chrome.storage.local.get(['url', 'username','password'], function(data) {
 			if(data.url && data.url.match(authRegex)){
 				//extracting the username and password from the setting string
 				var match = authRegex.exec(data.url);
 				var username = match[1];
 				var password = match[2];
-				
+
 	    		console.log("[UNREAD UPDATE]  Calling url["+data.url+"/stats] with basic auth");
 				var newUrl = data.url.replace(username+':'+password+'@', '');
-				
+
 				$.ajax({
 					type: "GET",
 					url: newUrl+'/stats',
@@ -114,10 +114,15 @@ function checkUnread(){
 					username: username,
 					password: password
 				});
-				
+
 			} else if (data.url && data.url.match(regex)){
-	    		console.log("[UNREAD UPDATE]  Calling url"+data.url+"/stats");
-		        $.getJSON(data.url+"/stats", updateCounter).fail(failUnread);
+					var url = data.url+'/stats';
+
+					if($.trim(data.username) !== '' && $.trim(data.password) !== ''){
+						url += '?username='+data.username+'&password='+data.password;
+					}
+	    		console.log("[UNREAD UPDATE]  Calling url"+url);
+		      $.getJSON(url, updateCounter).fail(failUnread);
 	    	}else{
 		    	console.log("[UNREAD UPDATE]  Invalid url");
 	    		chrome.browserAction.setBadgeText({text: "!"});
@@ -136,7 +141,7 @@ function updateCounter(result){
 	console.log("[UNREAD UPDATE] parsing result");
 	if(result.unread > 0){
 		chrome.browserAction.setBadgeText({text: result.unread.toString()});
-		
+
 		if(unreadCount < result.unread){
 			//Getting old unread count, if different than new one, display notification
     		chrome.notifications.create("unreadCount", {
@@ -154,7 +159,7 @@ function updateCounter(result){
 	}else{
 				chrome.browserAction.setBadgeText({text: ""});
 	}
-	
+
 	unreadCount = result.unread;
 }
 
@@ -231,10 +236,10 @@ function stopUpdateAlarm(){
 function updateFeeds(){
 	if(!updatingFeeds){
 		console.log("[UPDATE TRIGGER] updating feeds");
-		
+
 		updatingFeeds = true;
 		chrome.browserAction.setBadgeText({text: "Updating..."});
-	
+
 		chrome.storage.local.get('url', function(data) {
 	    	if (data.url && data.url.match(regex)){
 	    		console.log("[UPDATE TRIGGER]  Calling url "+data.url+"/update");
@@ -242,7 +247,7 @@ function updateFeeds(){
 		        	console.log("[UPDATE TRIGGER] Feed Updating finished");
 		        	updatingFeeds = false;
 					chrome.browserAction.setBadgeText({text: ""});
-					
+
 		        	checkUnread();
 		        }).fail(failUpdate);
 	    	}else{
@@ -279,5 +284,5 @@ function updateIconListener(){
    	    	chrome.browserAction.setPopup({popup:""});
     	//}
     });
-	
+
 }

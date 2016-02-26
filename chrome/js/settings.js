@@ -18,27 +18,37 @@ if (typeof String.prototype.endsWith != 'function') {
 
 
 $(document).ready(function(){
-	
+
 	$("#settings").submit(saveChanges);
-	
+
 	$("#update").click(toggleTimer);
-	
+
 	console.log("Trying to get settings");
-	chrome.storage.local.get('url', function(data) {
+  chrome.storage.local.get('url', function(data) {
       if (data.url)
         $("#url").val(data.url);
     });
-    
+
+    chrome.storage.local.get('username', function(data) {
+        if (data.username)
+          $("#username").val(data.username);
+      });
+
+      chrome.storage.local.get('password', function(data) {
+          if (data.password)
+            $("#password").val(data.password);
+        });
+
     chrome.storage.local.get('update', function(data) {
       if (data.update){
       	$("#update").prop("checked", data.update);
       	update = data.update;
-      	
+
       }
       toggleTimer();
     });
-    
-    
+
+
     chrome.storage.local.get('timer', function(data) {
       if (!isNaN(data.timer)){
         $("#timer").val(data.timer);
@@ -46,15 +56,15 @@ $(document).ready(function(){
       }else{
      	$("#timer").val(20);
       }
-    
+
     });
-    
+
     chrome.storage.local.get('action', function(data) {
       if (data.action){
         $("#action").val(data.action);
       }
     });
-  
+
 });
 
 
@@ -67,12 +77,13 @@ function saveChanges() {
 	var url = $("#url").val();
 	var timer = $("#timer").val();
 	var newUpdate = $("#update").prop("checked");
-	
-	
+	var username = $('#username').val();
+  var password = $('#password').val();
+
 	if(!url.startsWith("http://") && !url.startsWith("https://") ){
 		url = "http://"+url;
 	}
-	
+
 	if(url.endsWith("/")){
 		url = url.slice(0, - 1);
 	}
@@ -85,23 +96,25 @@ function saveChanges() {
 		alert('Error: No URL specified');
 		return false;
 	}
-	
+
 	if(!url.match(regex)){
 		alert("Invalid URL");
 		return false;
 	}
-	
+
 	if(isNaN(timer)){
 		alert("The timer must be a number");
 		return false;
 	}
-	
+
 	//alert(url);
 	// Save it using the Chrome extension storage API.
 	chrome.storage.local.set({
 		'url': url,
 		'update': newUpdate,
 		'timer': timer,
+    'username':username,
+    'password':password,
 		//'action': $("#action").val()
 		'action': 'visiteSite'
 		//'username': username,
@@ -109,29 +122,29 @@ function saveChanges() {
 		}, function() {
 		alert('Settings saved');
 	});
-	
+
 	chrome.extension.sendMessage({message: "check"}, function(response) {
 
 	});
-	
+
 	//only if the update has been enabled, we trigger the alarm
 	if(newUpdate && !update){
 		chrome.extension.sendMessage({message: "startUpdateAlarm"});
 	}
-	
+
 	//Stops the alarm if it was running previously
 	if(!newUpdate && update){
 		chrome.extension.sendMessage({message: "stopUpdateAlarm"});
 	}
-	
+
 	//If w the timer is changed, the alarm has to be restarted
 	if(update && timer != oldTimer){
 		chrome.extension.sendMessage({message: "restartUpdateAlarm"});
 	}
-	
+
 	chrome.extension.sendMessage({message: "updateIconListener"});
 
-	
+
 	update = newUpdate;
 	return false;
 }
@@ -147,4 +160,3 @@ function toggleTimer(){
 		$("#timer-container").slideUp();
 	}
 }
-
